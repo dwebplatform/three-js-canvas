@@ -8,6 +8,7 @@
     "build": "canvas-sketch src/index.js --build --inline"
   },
   "dependencies": {
+    "@tweenjs/tween.js": "^18.5.0",
     "canvas-sketch": "0.0.27",
     "canvas-sketch-cli": "1.1.7",
     "canvas-sketch-util": "1.4.1",
