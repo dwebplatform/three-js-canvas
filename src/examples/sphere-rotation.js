@@ -15,44 +15,42 @@ require("three/examples/js/controls/OrbitControls");
 
 const settings = {
   // Make the loop animated
-  animate: true,
+    animate: true,
   // Get a WebGL canvas rather than 2D
-  context: "webgl",
+    context: "webgl",
   // Turn on MSAA
-  attributes: { antialias: true }
+    attributes: { antialias: true }
 };
 
 const sketch = ({ context }) => {
   // Create a renderer
-  const renderer = new THREE.WebGLRenderer({
-    context
-  });
+        const renderer = new THREE.WebGLRenderer({
+                            context
+    });
 
   // WebGL background color
-  renderer.setClearColor("hsl(10, 60%, 70%)", 1);
+    renderer.setClearColor("hsl(10, 60%, 70%)", 1);
 
   // Setup a camera
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 500);
-  camera.position.set(2, 2, -70);
-  camera.lookAt(new THREE.Vector3());
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 500);
+    camera.position.set(2, 2, -70);
+    camera.lookAt(new THREE.Vector3());
 
   // Setup mouse orbit controller
-  const controls = new THREE.OrbitControls(camera);
-  const coords = { x: 0, y: 0 };
-  
+const controls = new THREE.OrbitControls(camera);
+ 
   // Setup your scene
-  const scene = new THREE.Scene();
-  globalScene.scene = scene;
+const scene = new THREE.Scene();
+globalScene.scene = scene;
   // Create a bunch of 'particles' in a group for the BG
-  
-  const material =new THREE.MeshBasicMaterial({color: "green"}) ;
+const material =new THREE.MeshBasicMaterial({color: "green"}) ;
 
     
         
-      
 
-  
-  const perfectPlace =[];  
+
+
+const perfectPlace =[];  
 
   const mesh = new THREE.Mesh(
     new THREE.SphereGeometry(1,2,2),
@@ -62,8 +60,7 @@ const sketch = ({ context }) => {
     const Boxes = [];
     var group = new THREE.Group();
     for(let i=0;i<30;i++){
-
-  const mesh2 = new THREE.Mesh(
+        const mesh2 = new THREE.Mesh(
         new THREE.SphereGeometry(Math.random()*1,32,32),
         new THREE.MeshBasicMaterial({color: "green"})
         );
@@ -73,38 +70,36 @@ const sketch = ({ context }) => {
         let x     = 30* Math.sin(tetta)*Math.cos(phy);
         let y     = 30* Math.sin(tetta)* Math.sin(phy);
         let z     = 30* Math.cos(tetta);
-     //   let randomPosition = [Math.floor(x ),Math.floor(y),Math.floor(z) ];
-        perfectPlace.push({
-          x,
-          y,
-          z
+            perfectPlace.push({
+            x,
+            y,
+            z
         });
         mesh2.position.set(0,0,0);
         mesh2.material.color.setRGB(Math.random(),Math.random(),Math.random());
         Boxes.push(mesh2);
         group.add(mesh2);
         scene.add(group);
-      }
+}
 
     
-      
+    
 
 
     perfectPlace.forEach((place,i)=>{
 
         const tween = new TWEEN.Tween(Boxes[i].position)
-          .to(place,1500)
-          .easing(TWEEN.Easing.Bounce.Out)
-          .onUpdate(function() { 
-          const {_object:object} = this;
-          const {x,y} = object;
+            .to(place,1500)
+            .easing(TWEEN.Easing.Bounce.Out)
+            .onUpdate(function() { 
+        const {_object:object} = this;
+        const {x,y} = object;
         Boxes[i].position.x = x;
         Boxes[i].position.y = y;
-      
-      }).start();
-      
+
+        }).start();  
     });
-  
+
 
 
   // Add a little mesh to the centre of the screen
@@ -121,12 +116,11 @@ const sketch = ({ context }) => {
     },
     // And render events here
     render({ time, deltaTime }) {
- 
-      group.rotation.y+=Math.PI/90;
-      
+        group.rotation.y+=Math.PI/90;
+    
       // controls.update();
-      TWEEN.update();
-      renderer.render(scene, camera);
+    TWEEN.update();
+    renderer.render(scene, camera);
     },
     // Dispose of WebGL context (optional)
         unload() {
@@ -137,5 +131,5 @@ const sketch = ({ context }) => {
 
 };
 
- 
+
 canvasSketch(sketch, settings);
