@@ -110,6 +110,7 @@ const sketch = ({ context }) => {
     );
 
     const Boxes = [];
+    var group = new THREE.Group();
     for(let i=0;i<30;i++){
       const mesh = new THREE.Mesh(
         new THREE.SphereGeometry(Math.random()*5,32,32),
@@ -123,7 +124,8 @@ const sketch = ({ context }) => {
         let randomPosition = [Math.floor(x ),y,Math.floor(z) ];
         mesh.position.set(...randomPosition);
         Boxes.push(mesh);
-        scene.add(mesh);
+        group.add(mesh)
+        scene.add(group);
       }
 
     
@@ -187,7 +189,7 @@ const sketch = ({ context }) => {
     render({ time, deltaTime }) {
 
  
-
+      group.rotation.y+=Math.PI/180;
       
   
         //  if( el.position.x>10 || el.position.x<-10){
