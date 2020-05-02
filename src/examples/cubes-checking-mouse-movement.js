@@ -17,95 +17,85 @@ require("three/examples/js/controls/OrbitControls");
 
 const settings = {
   // Make the loop animated
-  animate: true,
+    animate: true,
   // Get a WebGL canvas rather than 2D
-  context: "webgl",
+    context: "webgl",
   // Turn on MSAA
-  attributes: { antialias: true }
+    attributes: { antialias: true }
 };
 
 const sketch = ({ context }) => {
   // Create a renderer
-  const renderer = new THREE.WebGLRenderer({
+    const renderer = new THREE.WebGLRenderer({
     context
-  });
+    });
 
   // WebGL background color
-  renderer.setClearColor("tomato", 1);
+    renderer.setClearColor("tomato", 1);
 
   // Setup a camera
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 500);
-  camera.position.set(2, 2, -10);
-  camera.lookAt(new THREE.Vector3());
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 500);
+    camera.position.set(2, 2, -10);
+    camera.lookAt(new THREE.Vector3());
 
   // Setup mouse orbit controller
-  const controls = new THREE.OrbitControls(camera);
-   
+    const controls = new THREE.OrbitControls(camera);
+
   // Setup your scene
-  const scene = new THREE.Scene();
-  globalScene.scene = scene;
+    scene = new THREE.Scene();
+    globalScene.scene = scene;
   // Create a bunch of 'particles' in a group for the BG
-  
-  const material =new THREE.MeshBasicMaterial({color: "green"}) ;
-  const activeMaterial = new THREE.MeshBasicMaterial({color: "green"}) ;
-  const NotActiveMaterial = new THREE.MeshBasicMaterial({color: "red"}) ;
-  
-  var raycaster = new THREE.Raycaster();
-  var mouse = new THREE.Vector2();
- const sphereMaterial = new THREE.MeshBasicMaterial({color: "green"})
-  
- 
-  const cubes =[];
-  const breadCrumps ={};
-  globalScene.breadCrumps = breadCrumps;
-  let initialX=0,initialZ = 0;
-  for(let i=0;i<10;i++){
-      if(initialZ<5)
-      {
+
+    const material =new THREE.MeshBasicMaterial({color: "green"}) ;
+    const activeMaterial = new THREE.MeshBasicMaterial({color: "green"}) ;
+    const NotActiveMaterial = new THREE.MeshBasicMaterial({color: "red"}) ;
+
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    const cubes =[];
+    const breadCrumps ={};
+    globalScene.breadCrumps = breadCrumps;
+    let initialX=0,initialZ = 0;
+    for(let i=0;i<10;i++){
+        if(initialZ<5){
         initialZ++;
-      }
-      else {
+    }
+    else {
         initialX++;
         initialZ=1;
-      }
-      const cube = new THREE.Mesh(
+    }
+    const cube = new THREE.Mesh(
         new THREE.BoxGeometry(1,1,1),
         NotActiveMaterial
-      );
-      cubes.push({
-          cube:cube,
-          isActive: false
-      });
+    );
+    cubes.push({
+    cube:cube,
+    isActive: false
+    });
     cube.position.set(initialX*2,0, initialZ*2);
     scene.add(cube);
     }
     globalScene.cubes = cubes;
-  // const mesh = new THREE.Mesh(
-  //   new THREE.BoxGeometry(1,1,1),
-  //   NotActiveMaterial
-  //   );
-  //   scene.add(mesh);
-  
-  
+//Определяем движение мыши по экрану
 function onMouseMove(e){
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
-  let intersects = raycaster.intersectObjects( scene.children );
+    raycaster.setFromCamera(mouse, camera);
+    let intersects = raycaster.intersectObjects( scene.children );
     // controls.update();
     for ( var i = 0; i < intersects.length; i++ ) {
-      if( intersects[i]){
+        if( intersects[i]){
         breadCrumps[intersects[i].object.id] = true;
 
         // intersects[i].isActive = true;
         // intersects[i].object.material.color.set("red");
-      }
+}
     
     }
-  }
-  // Add a little mesh to the centre of the screen
+}
 
-  window.addEventListener( 'mousemove', onMouseMove, false);
+    window.addEventListener( 'mousemove', onMouseMove, false);
 
   // draw each frame
     return {
@@ -118,18 +108,17 @@ function onMouseMove(e){
     },
     // And render events here
     render({ time, deltaTime }) {
-      
-  
+
     cubes.forEach((item)=>{
     
-      if(breadCrumps[item.cube.id]){
+    if(breadCrumps[item.cube.id]){
         item.cube.material =activeMaterial;
-      }
-      else{
+    }
+    else{
         item.cube.material = NotActiveMaterial;
 
-      }
-     });
+    }
+    });
     renderer.render(scene, camera);
     },
     // Dispose of WebGL context (optional)
@@ -140,13 +129,10 @@ function onMouseMove(e){
 };
 
 };
-// for (var prop in obj) { if (obj.hasOwnProperty(prop)) { delete obj[prop]; } }
-
-// setTimeout(()=>{
-//   globalScene.cubes.forEach(item=>item.isActive = !item.isActive);
-// },3000);
+ 
 setInterval(()=>{
-  for (var prop in globalScene.breadCrumps) { if (globalScene.breadCrumps.hasOwnProperty(prop)) { delete globalScene.breadCrumps[prop]; } }
+    // Очищаем поля активных кубиков
+    for (var prop in globalScene.breadCrumps) { if (globalScene.breadCrumps.hasOwnProperty(prop)) { delete globalScene.breadCrumps[prop]; } }
 
- },5000);
+    },5000);
 canvasSketch(sketch, settings);
