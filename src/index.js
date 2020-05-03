@@ -1,7 +1,10 @@
 const canvasSketch = require("canvas-sketch");
 const random = require("canvas-sketch-util/random");
 const  TWEEN = require('@tweenjs/tween.js');
+ 
 
+ 
+ 
 const globalScene ={
     scene:null,
     cubes:null,
@@ -93,7 +96,7 @@ function onMouseMove(e){
   raycaster.setFromCamera(mouse, camera);
   let intersects = raycaster.intersectObjects( scene.children );
     // controls.update();
-    for ( var i = 0; i < intersects.length; i++ ) {
+    for ( var i = 0; i < 1; i++ ) {
       if( intersects[i]){
         breadCrumps[intersects[i].object.id] = true;
 
