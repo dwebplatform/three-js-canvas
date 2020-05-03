@@ -7,7 +7,7 @@ var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeig
 
 
 
-const l = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"];
+ 
 let AudioCtx ;
  
  
@@ -36,13 +36,11 @@ const data = Array.from(d);
     {  cubes[i].position.y=  Math.floor( (data[i]/255)*8) ;
             cubes[i].rotation.y +=(2*Math.PI/255)*data[i]*8;
             console.log(data[i]);
-    cubes[i].material.color.setRGB( Math.sin(data[i]/255* Math.PI*2),Math.cos(data[i]/255* Math.PI*2),0);
+        cubes[i].material.color.setRGB( Math.sin(data[i]/255* Math.PI*2),Math.cos(data[i]/255* Math.PI*2),0);
     }
         }
     }
-//     document.title = s.join("");
 
-// document.getElementById("app").innerHTML = s.join("");
 }
 
 
