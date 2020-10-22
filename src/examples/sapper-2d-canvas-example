@@ -1,0 +1,190 @@
+let canvas, ctx;
+let blocks =[];
+let blockSize = 40;
+let blockCount =20;
+let bombProbability = 0.2;
+let game = false;
+
+init();
+initBlocks(); 
+
+function drawBomb(x,y){// рисование бомбочки
+    ctx.beginPath();
+    ctx.fillStyle = "red";
+    ctx.arc(x*blockSize+blockSize/2,y*blockSize+blockSize/2,blockSize/3,0,2*Math.PI,true);
+    ctx.fill();
+    ctx.fillStyle="black";
+    ctx.rect(x*blockSize,y*blockSize, blockSize, blockSize);
+    ctx.stroke();
+}
+function drawBox(x,y, number){// рисование квадрата с числом
+    ctx.fillStyle = "#555";
+    ctx.fillRect(x*blockSize, y*blockSize,blockSize, blockSize);
+    ctx.font ="20px serif";
+    ctx.fillStyle="#ddd";
+    ctx.fillText(number, x*blockSize+10, (y+1)*blockSize-10);
+}
+
+function createRow(){// создаем сетку
+    let yRow = [];  
+    for(let x =0;x<blockCount;x++){
+        if(Math.random()<bombProbability){
+            yRow.push({type:'bomb',number:9, isShow: false});
+        } else {
+            yRow.push({type:'empty',number:0,isShow: false});
+        }
+    }
+    return yRow;
+}
+
+function isBomb(x,y){// проверяем текущую клетку на бомбу 
+    return blocks[y] && blocks[y][x] && blocks[y][x].type=='bomb';
+}
+function setNum(x,y){// ставим цифорку для пустой ячейки, если рядом есть бомбочка
+        if(!(blocks[y][x].number==9)){// если это не бомба
+            let totalNum = 0;
+            if(isBomb(x+1,y)){// если справа бомбочка
+                totalNum++;
+            }
+            if(isBomb(x-1,y)){
+                totalNum++;
+            } 
+            if(isBomb(x,y-1)){
+                totalNum++;
+            }
+            if(isBomb(x,y+1)){
+                   totalNum++; 
+            }
+            if(isBomb(x+1,y+1)){
+                totalNum++; 
+            }
+            if(isBomb(x-1,y+1)){
+                totalNum++; 
+            }
+            if(isBomb(x-1,y-1)){
+                totalNum++;
+            }
+            if(isBomb(x+1,y-1)){
+                totalNum++;
+            }
+            blocks[y][x].number = totalNum;
+        }
+}
+function initBlocks(){// создаем квадратики
+    for(let y=0;y<blockCount;y++){
+        blocks.push(createRow());
+    }
+    // updateNumberOfEachNotBomb
+    for(let y=0;y<blockCount;y++){
+        for(let x=0;x<blockCount;x++){
+            setNum(x,y);
+        }
+
+    }
+
+}
+ 
+function init(){
+    canvas = document.querySelector('canvas');
+    ctx = canvas.getContext('2d');
+}
+
+gameloop();
+function gameloop(){
+    render();
+    requestAnimationFrame(gameloop);
+}
+ 
+function drawEmptyBox(x,y){
+    ctx.fillStyle = "#555";
+    ctx.fillRect(x*blockSize, y*blockSize,blockSize, blockSize);
+}
+
+function   drawLines(){
+    for(let t = 0; t < blockCount + 1; t++) {
+        ctx.strokeStyle = "#fff";
+        ctx.beginPath();
+        ctx.moveTo(0,t * blockSize);
+        ctx.lineTo(canvas.width,t * blockSize);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(t * blockSize,0);
+        ctx.lineTo(t * blockSize,canvas.height);
+        ctx.stroke();
+    }
+}
+
+function render(){
+    ctx.fillStyle="#eee";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    for(let y =0;y<blockCount;y++){
+        for(let x=0;x<blockCount;x++){
+            if(blocks[y][x].isShow){// если показать, то показываем
+                if(blocks[y][x].number===9){// рисуем бомбочку
+                    drawBomb(x,y);
+                } else {
+                    let {number} = blocks[y][x];
+                    drawBox(x,y,number);// box if clicked draw count of bombs
+                }
+            } else {
+                drawEmptyBox(x,y);
+            }
+        }
+    }
+    drawLines();
+}
+
+function checkZero(x,y){
+    if(!blocks[y] || !blocks[y][x]){
+        return;
+    }
+    if(blocks[y][x].isShow){
+        return;    
+    }
+    if(blocks[y][x].number==0){// если это ноль то показываем
+         showBlock(x,y);
+    } 
+}
+function showBlock(x,y){
+    if(!blocks[y][x]){
+        return;       
+    }
+    blocks[y][x].isShow = true;
+    if(!(blocks[y][x].number==0)){
+        return;
+    } else{
+        checkZero(x+1,y);
+        checkZero(x-1,y);
+        checkZero(x,y+1);
+        checkZero(x,y-1);
+    }
+}
+
+function debugBlocks(){// debug func for checking bombs position
+    for(let y=0;y<blockCount;y++){
+        for(let x=0;x<blockCount;x++){
+            blocks[y][x].isShow = true;
+        }
+    }
+}
+
+function resetBlocks(){
+    for(let y=0;y<blockCount;y++){
+        for(let x=0;x<blockCount;x++){
+            blocks[y][x].isShow = false;
+        }
+    }
+}
+canvas.addEventListener('mousedown', function(e){
+    if(!game){
+        resetBlocks();
+        game = true;
+    }
+    let y = Math.floor((e.clientY/blockSize));
+    let x = Math.floor((e.clientX/blockSize));
+    if(blocks[y][x].number==9){
+        console.log('You lose');
+        game = false;
+    }
+    showBlock(x,y);
+});
